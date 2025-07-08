@@ -1,22 +1,28 @@
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose'); // 👈 add this
+const mongoose = require('mongoose');
+require('dotenv').config(); // ✅ Load environment variables from .env
 
 const app = express();
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// 👇 paste your MongoDB connection string here
-mongoose.connect('mongodb+srv://2023387520preksha:dtUV8vrUPH7TtkYz@cluster0.yx3olbi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', {
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
-}).then(() => console.log("✅ Connected to MongoDB"))
-  .catch(err => console.log("❌ DB Connection Error:", err));
+})
+.then(() => console.log("✅ Connected to MongoDB"))
+.catch(err => console.error("❌ DB Connection Error:", err));
 
-// routes
+// Routes
 const productRoutes = require('./routes/productRoutes');
 app.use('/api/products', productRoutes);
 
-// server
-app.listen(5000, () => console.log("🚀 Server running on port 5000"));
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+
 
